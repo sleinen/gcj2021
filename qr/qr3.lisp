@@ -1,4 +1,4 @@
-;;; Google Code Jam 2021, Qualification Round, Problem 1: Reversort
+;;; Google Code Jam 2021, Qualification Round, Problem 3: Reversort Engineering
 
 (defun solve (&optional (in *standard-input*))
   (dotimes (caseno (read in))
