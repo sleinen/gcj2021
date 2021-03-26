@@ -48,48 +48,4 @@
         (setf (subseq M i (+ minpos 1))
               (reverse (subseq M i (+ minpos 1))))))))
 
-;;; Exploratory programming time...
-;;;
-;;; What is the range of possible cost values for sequences of length N?
-;;;
-;;; We can go through all N! lists and just collect the different values.
-;;;
-(defun map-permut (n fn)
-  (let ((iota (make-array n)))
-    (dotimes (k (length iota))
-      (setf (aref iota k) k))
-    (map-permut-1 #() iota fn)))
-
-(defun map-permut-1 (prefix rest fn)
-  (if (zerop (length rest))
-      (funcall fn prefix)
-      (dotimes (pos (length rest))
-        (map-permut-1 (concatenate 'simple-vector prefix (vector (aref rest pos)))
-                      (concatenate 'simple-vector
-                                   (subseq rest 0 pos)
-                                   (subseq rest (+ pos 1)))
-                      fn))))
-
-(defun result-set (n)
-  (let ((result '()))
-    (map-permut n #'(lambda (x) (pushnew (cost x) result)))
-    (let ((min (reduce #'min result))
-          (max (reduce #'max result)))
-      (do ((x min (+ x 1)))
-          ((> x max))
-        (assert (member x result)))
-      (values min max))))
-
-;;; It turns out that the minimum is always N-1,
-;;;
-;;; and the maximum, maxcost(N) is
-;;;
-;;;     0 for N=0,
-;;;     maxcost(N-1)+N for N > 0.
-;;;
-;;; For the moment, we "just assume" that for all values from
-;;; mincost(N) to maxcost(N) (inclusive), there is an ordering that
-;;; has that cost.  Hopefully this will become clear once we can find
-;;; a construction!
-
 (solve)
