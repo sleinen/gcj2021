@@ -16,7 +16,7 @@
   (construct-case-0 n (+ (- cost n) 1)))
 
 (defun construct-case-0 (n cost)
-  (and (>= cost 0) (< cost (/ (* n (- n 1)) 2))
+  (and (>= cost 0) (<= cost (/ (* n (- n 1)) 2))
        (construct-case-1 n cost))
   )
 
