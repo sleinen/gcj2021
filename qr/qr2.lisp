@@ -12,22 +12,21 @@
       (format t "~D~%" cost))))
 
 (defun min-cost (x y seq)
-  (let ((cost 0)
-        (state #\?))
-    (dotimes (k (length seq) cost)
-      (ecase (aref seq k)
-        ((#\?))
-        ((#\C)
-         (ecase state
-           ((#\C))
-           ((#\J) (incf cost y))
-           ((#\?)))
-         (setq state #\C))
-        ((#\J)
-         (ecase state
-           ((#\C) (incf cost x))
-           ((#\J))
-           ((#\?)))
-         (setq state #\J))))))
+  (let ((first (char seq 0)))
+    (min-cost-1 x y 1 seq (ecase first ((#\C #\?) 0) ((#\J) nil)) (ecase first ((#\J #\?) 0) ((#\C) nil)))))
+
+(defun minq+ (cs x js y)
+  (if cs
+      (if js (min (+ cs x) (+ js y))
+          (+ cs x))
+      (+ js y)))
+
+(defun min-cost-1 (x y k seq cs js)
+  (if (>= k (length seq))
+      (minq+ cs 0 js 0)
+      (ecase (char seq k)
+        ((#\C) (min-cost-1 x y (+ k 1) seq (minq+ cs 0 js y) nil))
+        ((#\J) (min-cost-1 x y (+ k 1) seq nil (minq+ cs x js 0)))
+        ((#\?) (min-cost-1 x y (+ k 1) seq (minq+ cs 0 js y) (minq+ cs x js 0))))))
 
 (solve)
