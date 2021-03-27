@@ -85,19 +85,19 @@
 
 (defun well-ordered4 (a ax bx b qe)
   (if (gethash (sort (list a ax bx) #'<) (qe-c1 qe))
-      (= (query-median a ax bx qe) ax)
-      (= (query-median ax bx b qe) bx))
+      (= (query-median-3 a ax bx qe) ax)
+      (= (query-median-3 ax bx b qe) bx))
   #+FOO
   (let ((c1 (qe-c1 qe)))
     (if (gethash (sort (list a ax bx) #'<) c1)
-        (query-median a ax bx qe)
-        (query-median ax bx b qe))))
+        (query-median-3 a ax bx qe)
+        (query-median-3 ax bx b qe))))
 
 (defun forget-extremes (c a b)
   (declare (ignore a b))
   c)
 
-(defun query-median (a b c qe)
+(defun query-median-3 (a b c qe)
   (let ((query (sort (list a b c) #'<)) ;; optimization: sort arguments.
         ;; The order of arguments doesn't influence the result.
         ;; This saves us some queries.
@@ -123,7 +123,7 @@
     (do ((n (length cand) (length cand))
          (k 0 (mod (+ k 1) (length cand))))
         ((<= n 2) (values (aref cand 0) (aref cand 1) qe))
-      (let ((median (query-median
+      (let ((median (query-median-3
                      (aref cand k)
                      (aref cand (mod (+ k 1) (length cand)))
                      (aref cand (mod (+ k 2) (length cand)))
